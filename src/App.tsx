@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,30 +13,77 @@ import Portfolio from "./pages/Portfolio";
 import Performance from "./pages/Performance";
 import Analysis from "./pages/Analysis";
 import Settings from "./pages/Settings";
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import Auth from './pages/Auth';
+import Profile from './pages/Profile';
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/stocks" element={<Stocks />} />
-          <Route path="/markets" element={<Markets />} />
-          <Route path="/currencies" element={<Currencies />} />
-          <Route path="/global" element={<Global />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/performance" element={<Performance />} />
-          <Route path="/analysis" element={<Analysis />} />
-          <Route path="/settings" element={<Settings />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
+            } />
+            <Route path="/stocks" element={
+              <ProtectedRoute>
+                <Stocks />
+              </ProtectedRoute>
+            } />
+            <Route path="/markets" element={
+              <ProtectedRoute>
+                <Markets />
+              </ProtectedRoute>
+            } />
+            <Route path="/currencies" element={
+              <ProtectedRoute>
+                <Currencies />
+              </ProtectedRoute>
+            } />
+            <Route path="/global" element={
+              <ProtectedRoute>
+                <Global />
+              </ProtectedRoute>
+            } />
+            <Route path="/portfolio" element={
+              <ProtectedRoute>
+                <Portfolio />
+              </ProtectedRoute>
+            } />
+            <Route path="/performance" element={
+              <ProtectedRoute>
+                <Performance />
+              </ProtectedRoute>
+            } />
+            <Route path="/analysis" element={
+              <ProtectedRoute>
+                <Analysis />
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
