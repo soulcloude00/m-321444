@@ -2,60 +2,60 @@
 import React from 'react';
 import { PageLayout } from '@/components/layout/PageLayout';
 import ProfileCard from '@/components/profile/ProfileCard';
-import { useWatchlist } from '@/hooks/useWatchlist';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
+import ProfileStats from '@/components/profile/ProfileStats';
+import RecentActivity from '@/components/profile/RecentActivity';
+import AccountSettings from '@/components/profile/AccountSettings';
+import WatchlistManager from '@/components/profile/WatchlistManager';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { User, Settings, Eye, Activity } from 'lucide-react';
 
 const Profile = () => {
-  const { watchlist, loading, removeFromWatchlist } = useWatchlist();
-
-  const handleRemoveFromWatchlist = async (id: string) => {
-    const { error } = await removeFromWatchlist(id);
-    if (error) {
-      toast.error('Failed to remove from watchlist');
-    } else {
-      toast.success('Removed from watchlist');
-    }
-  };
-
   return (
     <PageLayout title="Profile">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ProfileCard />
+      <div className="space-y-6">
+        {/* Profile Stats Overview */}
+        <ProfileStats />
         
-        <Card>
-          <CardHeader>
-            <CardTitle>Watchlist</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <p>Loading watchlist...</p>
-            ) : watchlist.length === 0 ? (
-              <p className="text-muted-foreground">No stocks in your watchlist yet.</p>
-            ) : (
-              <div className="space-y-2">
-                {watchlist.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between p-2 border rounded">
-                    <div>
-                      <Badge variant="secondary">{item.symbol}</Badge>
-                      <span className="ml-2 text-sm">{item.name}</span>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleRemoveFromWatchlist(item.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {/* Main Profile Content */}
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview" className="flex items-center gap-2">
+              <User className="h-4 w-4" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="watchlist" className="flex items-center gap-2">
+              <Eye className="h-4 w-4" />
+              Watchlist
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              Activity
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Settings
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <ProfileCard />
+              <RecentActivity />
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="watchlist" className="space-y-6">
+            <WatchlistManager />
+          </TabsContent>
+          
+          <TabsContent value="activity" className="space-y-6">
+            <RecentActivity />
+          </TabsContent>
+          
+          <TabsContent value="settings" className="space-y-6">
+            <AccountSettings />
+          </TabsContent>
+        </Tabs>
       </div>
     </PageLayout>
   );
